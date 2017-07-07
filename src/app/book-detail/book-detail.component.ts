@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute,Router } from '@angular/router';
+import { Book } from '../service/model/Book';
+import { BookApi } from '../service/api/bookApi';
+
 
 @Component({
   selector: 'bs-book-detail',
@@ -7,18 +11,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BookDetailComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router, private bookService: BookApi, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.params
+      .map(params => params['bookId'])
+      .switchMap(id => this.bookService.findBook(id))
+      .subscribe(book => this.book = book);
   }
 
-  private book = {
-    title: "dummy title",
-    description: "dummy description",
-    unitCost: "123",
-    isbn: "13-1234-43215",
-    nbOfPages: "123",
-    language: "English"
-  };
+  delete() {
+    this.bookService.deleteBook(this.book.id)
+      .finally(() => this.router.navigate(['/book-list']))
+      .subscribe();
+  }
+
+  private book = new Book();
 
 }

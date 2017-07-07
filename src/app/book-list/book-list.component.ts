@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Book } from '../service/model/Book';
+import { BookApi } from '../service/api/bookApi';
 
 @Component({
   selector: 'bs-book-list',
@@ -7,26 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BookListComponent implements OnInit {
 
-  constructor() { }
+  constructor(private bookService: BookApi) { }
 
   ngOnInit() {
+    this.bookService.countAllBooks().subscribe(nbBooks => this.nbBooks = nbBooks);
+    this.bookService.findAllBooks().subscribe(books => this.books = books);
   }
 
-  private nbBooks: number = 3;
+  private nbBooks: number;
 
-  private books = [
-    {
-      id: "1",
-      title: "title 1",
-      url: "http://ecx.images-amazon.com/images/I/51amFVZbyKL._SL160_.jpg",
-      description: "description 1"
-    },
-    {
-      id: "2",
-      title: "title 2",
-      url: "http://ecx.images-amazon.com/images/I/51amFVZbyKL._SL160_.jpg",
-      description: "description 2"
-    }
-  ];
+  private books: Book[];
 
 }
